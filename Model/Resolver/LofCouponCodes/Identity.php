@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Lofmp\CouponCodeGraqhQl\Model\Resolver\Coupon;
+namespace Lofmp\CouponCodeGraqhQl\Model\Resolver\LofCouponCodes;
 
 use Magento\Framework\GraphQl\Query\Resolver\IdentityInterface;
 
@@ -20,9 +20,9 @@ class Identity implements IdentityInterface
      */
     public function getIdentities(array $resolvedData): array
     {
-        $ids =  empty($resolvedData['id']) ?
-                        [] : [$this->cacheTag, sprintf('%s_%s', $this->cacheTag, $resolvedData['id'])];
-        
+        $ids =  empty($resolvedData['couponcode_id']) ?
+                        [] : [$this->cacheTag, sprintf('%s_%s', $this->cacheTag, $resolvedData['couponcode_id'])];
+
                     return $ids;
     }
 }
