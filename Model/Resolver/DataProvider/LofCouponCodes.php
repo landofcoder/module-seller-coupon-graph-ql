@@ -20,6 +20,7 @@ use Magento\Search\Model\Query;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ScopeInterface;
 use Lofmp\CouponCode\Api\CouponManagementInterface;
+use Lofmp\CouponCode\Api\RuleRepositoryInterface;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\ArgumentApplier\Filter;
 
@@ -45,6 +46,11 @@ class LofCouponCodes
     private $modelRepository;
 
     /**
+     * @var RuleRepositoryInterface
+     */
+    private $ruleRepository;
+
+    /**
      * @var GetCustomer
      */
     private $getCustomer;
@@ -53,13 +59,15 @@ class LofCouponCodes
         CouponManagementInterface $modelRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ScopeConfigInterface $scopeConfig,
-        GetCustomer $getCustomer
+        GetCustomer $getCustomer,
+        RuleRepositoryInterface $ruleRepository
     )
     {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->modelRepository = $modelRepository;
         $this->scopeConfig = $scopeConfig;
         $this->getCustomer = $getCustomer;
+        $this->ruleRepository = $ruleRepository;
     }
     /**
      * @inheritdoc
@@ -116,7 +124,13 @@ class LofCouponCodes
         $items = [];
         if($resultItems){
             foreach($resultItems as $_item){
-                $items[] = $_item->__toArray();
+                $newItem = $_item->__toArray();
+                $newItem["coupon_rule"] = [];
+                if ($_item->getRuleId()) {
+                    $ruleItem = $this->ruleRepository->getById($_item->getRuleId() );
+                    $newItem["coupon_rule"] = $ruleItem->__toArray();
+                }
+                $items[] = $newItem;
             }
         }
         return [

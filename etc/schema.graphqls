@@ -51,6 +51,14 @@ type LofCouponCode {
     created_at  : String  @doc(description: "Query by created_at.")
     expiration_date  : expiration_date  @doc(description: "Query by created_at.")
     type  : String  @doc(description: "Query by type.")
+    coupon_rule : LofCouponRule @doc(description: "Query by Coupon Rule info")
+}
+
+type LofCouponRule {
+    rule_id  : Int  @doc(description: "Query by rule_id.")
+    coupon_rule_id  : Int  @doc(description: "Query by coupon_rule_id.")
+    rule_name : String @doc(description: "Query by rule_name.")
+    discount_amount  : Float  @doc(description: "Query by discount_amount.")
 }
 
 type LofCouponCodes @doc(description: "The push notifications object is the top-level object returned in a notification search.") {
