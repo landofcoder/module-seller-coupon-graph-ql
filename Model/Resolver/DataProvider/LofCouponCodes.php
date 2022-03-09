@@ -69,6 +69,7 @@ class LofCouponCodes
         $this->getCustomer = $getCustomer;
         $this->ruleRepository = $ruleRepository;
     }
+
     /**
      * @inheritdoc
      */
@@ -118,6 +119,58 @@ class LofCouponCodes
                 $searchResult = $this->modelRepository->getCouponByConditions($customer->getId(), $searchCriteria );
                 break;
         }
+
+        $totalPages = $args['pageSize'] ? ((int)ceil($searchResult->getTotalCount() / $args['pageSize'])) : 0;
+        $resultItems = $searchResult->getItems();
+        $items = [];
+        if($resultItems){
+            foreach($resultItems as $_item){
+                $newItem = $_item->__toArray();
+                $newItem["coupon_rule"] = [];
+                if ($_item->getRuleId()) {
+                    $ruleItem = $this->ruleRepository->getById($_item->getRuleId() );
+                    $newItem["coupon_rule"] = $ruleItem->__toArray();
+                }
+                $items[] = $newItem;
+            }
+        }
+        return [
+            'total_count' => $searchResult->getTotalCount(),
+            'items'       => $items,
+            'page_info' => [
+                'page_size' => $args['pageSize'],
+                'current_page' => $args['currentPage'],
+                'total_pages' => $totalPages
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSellerCouponCodes($args, $context)
+    {
+        $customer = $this->getCustomer->execute($context);
+        if (!$customer || !$customer->getId()) {
+            throw new GraphQlInputException(__('please login with your account before.'));
+        }
+        if ($args['currentPage'] < 1) {
+            throw new GraphQlInputException(__('currentPage value must be greater than 0.'));
+        }
+        if ($args['pageSize'] < 1) {
+            throw new GraphQlInputException(__('pageSize value must be greater than 0.'));
+        }
+        if(isset($args['filters']) && (!isset($args['filters']['status']) || !$args['filters']['status'])){
+            $args['filters']['status'] = ['eq' => 1];
+        }
+
+        $store = $context->getExtensionAttributes()->getStore();
+        $args[Filter::ARGUMENT_NAME] = $this->formatMatchFilters($args['filters'], $store);
+        $searchCriteria = $this->searchCriteriaBuilder->build( 'lofCouponCodes', $args );
+        $searchCriteria->setCurrentPage( $args['currentPage'] );
+        $searchCriteria->setPageSize( $args['pageSize'] );
+
+        $searchResult = $this->modelRepository->getPublicCoupons($args["sellerUrl"], $searchCriteria );
 
         $totalPages = $args['pageSize'] ? ((int)ceil($searchResult->getTotalCount() / $args['pageSize'])) : 0;
         $resultItems = $searchResult->getItems();
