@@ -135,7 +135,7 @@ class LofCouponCodes
         $items = [];
         if ($resultItems) {
             foreach ($resultItems as $_item) {
-                $newItem = $_item->__toArray();
+                $newItem = $_item->getData();
                 $newItem["coupon_rule"] = [];
                 if ($_item->getRuleId()) {
                     $ruleItem = $this->ruleRepository->getById($_item->getRuleId() );
@@ -184,7 +184,7 @@ class LofCouponCodes
         $items = [];
         if ($resultItems) {
             foreach ($resultItems as $_item) {
-                $newItem = $_item->__toArray();
+                $newItem = $_item->getData();
                 $newItem["coupon_rule"] = [];
                 if ($_item->getRuleId()) {
                     $ruleItem = $this->ruleRepository->getById($_item->getRuleId() );
