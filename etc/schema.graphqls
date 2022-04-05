@@ -19,12 +19,13 @@ type Query {
 
 input CouponCodeFilterInput  @doc(description: "CouponCodeFilterInput defines the filters to be used in the search. A filter contains at least one attribute, a comparison operator, and the value that is being searched for.")
 {
-    entity_id: FilterEqualTypeInput @deprecated(reason: "Filter Slider entity_id")
-    category_id: FilterEqualTypeInput @deprecated(reason: "Filter Slider category_id")
-    resource_type: FilterEqualTypeInput @deprecated(reason: "Filter Slider resource_type")
-    status: FilterEqualTypeInput @deprecated(reason: "Filter Slider status")
-    store_id: FilterMatchTypeInput @deprecated(reason: "Filter Slider store_id")
+    entity_id: FilterEqualTypeInput @deprecated(reason: "Filter Coupon Code entity_id")
+    category_id: FilterEqualTypeInput @deprecated(reason: "Filter Coupon Code category_id")
+    resource_type: FilterEqualTypeInput @deprecated(reason: "Filter Coupon Code resource_type")
+    status: FilterEqualTypeInput @deprecated(reason: "Filter Coupon Code status")
+    store_id: FilterMatchTypeInput @deprecated(reason: "Filter Coupon Code store_id")
     created_at: FilterMatchTypeInput @doc(description: "Filter Timestamp indicating when the coupon was created")
+    is_public: FilterEqualTypeInput @deprecated(reason: "Filter Coupon Code is_public")
 }
 
 input CouponCodeSortInput @doc(description: "CouponCodeSortInput specifies the attribute to use for sorting search results and indicates whether the results are sorted in ascending or descending order. It's possible to sort coupons using searchable attributes with enabled 'Use in Filter Options' option")
