@@ -19,7 +19,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Search\Model\Query;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ScopeInterface;
-use Lofmp\CouponCode\Api\CouponManagementInterfaceFactory;
+use Lofmp\CouponCode\Api\CouponManagementInterface;
 use Lofmp\CouponCode\Api\RuleRepositoryInterface;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\ArgumentApplier\Filter;
@@ -41,9 +41,9 @@ class LofCouponCodes
      */
     private $searchCriteriaBuilder;
     /**
-     * @var CouponManagementInterfaceFactory
+     * @var CouponManagementInterface
      */
-    private $modelRepositoryFactory;
+    private $modelRepository;
 
     /**
      * @var RuleRepositoryInterface
@@ -58,14 +58,14 @@ class LofCouponCodes
     /**
      * construct class
      *
-     * @param CouponManagementInterfaceFactory $modelRepositoryFactory
+     * @param CouponManagementInterface $modelRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param ScopeConfigInterface $scopeConfig
      * @param GetCustomer $getCustomer
      * @param RuleRepositoryInterface $ruleRepository
      */
     public function __construct(
-        CouponManagementInterfaceFactory $modelRepositoryFactory,
+        CouponManagementInterface $modelRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ScopeConfigInterface $scopeConfig,
         GetCustomer $getCustomer,
@@ -73,7 +73,7 @@ class LofCouponCodes
     )
     {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->modelRepositoryFactory = $modelRepositoryFactory;
+        $this->modelRepository = $modelRepository;
         $this->scopeConfig = $scopeConfig;
         $this->getCustomer = $getCustomer;
         $this->ruleRepository = $ruleRepository;
@@ -115,20 +115,20 @@ class LofCouponCodes
 
         switch ($filterType) {
             case "available":
-                $searchResult = $this->modelRepositoryFactory->create()
+                $searchResult = $this->modelRepository
                                 ->getAvailableCoupons($customer->getId(), $searchCriteria );
                 break;
             case "expired":
-                $searchResult = $this->modelRepositoryFactory->create()
+                $searchResult = $this->modelRepository
                                 ->getExpiredCoupons($customer->getId(), $searchCriteria );
                 break;
             case "used":
-                $searchResult = $this->modelRepositoryFactory->create()
+                $searchResult = $this->modelRepository
                                 ->getUsedCoupons($customer->getId(), $searchCriteria );
                 break;
             case "all":
             default:
-                $searchResult = $this->modelRepositoryFactory->create()
+                $searchResult = $this->modelRepository
                             ->getCouponByConditions($customer->getId(), $searchCriteria );
                 break;
         }
@@ -183,7 +183,7 @@ class LofCouponCodes
         $searchCriteria->setCurrentPage( $args['currentPage'] );
         $searchCriteria->setPageSize( $args['pageSize'] );
 
-        $searchResult = $this->modelRepositoryFactory->create()
+        $searchResult = $this->modelRepository
                             ->getPublicCoupons($args["sellerUrl"], $searchCriteria );
 
         $totalPages = $args['pageSize'] ? ((int)ceil($searchResult->getTotalCount() / $args['pageSize'])) : 0;
