@@ -55,6 +55,15 @@ class LofCouponCodes
      */
     private $getCustomer;
 
+    /**
+     * construct class
+     *
+     * @param CouponManagementInterfaceFactory $modelRepositoryFactory
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param ScopeConfigInterface $scopeConfig
+     * @param GetCustomer $getCustomer
+     * @param RuleRepositoryInterface $ruleRepository
+     */
     public function __construct(
         CouponManagementInterfaceFactory $modelRepositoryFactory,
         SearchCriteriaBuilder $searchCriteriaBuilder,
