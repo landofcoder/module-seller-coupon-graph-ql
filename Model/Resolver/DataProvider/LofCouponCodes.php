@@ -94,9 +94,6 @@ class LofCouponCodes
         if ($args['pageSize'] < 1) {
             throw new GraphQlInputException(__('pageSize value must be greater than 0.'));
         }
-        if(isset($args['filters']) && (!isset($args['filters']['status']) || !$args['filters']['status'])){
-            $args['filters']['status'] = ['eq' => 1];
-        }
         $availableTypes = [
             "all",
             "available",
@@ -163,18 +160,14 @@ class LofCouponCodes
      */
     public function getSellerCouponCodes($args, $context)
     {
-        $customer = $this->getCustomer->execute($context);
-        if (!$customer || !$customer->getId()) {
-            throw new GraphQlInputException(__('please login with your account before.'));
-        }
         if ($args['currentPage'] < 1) {
             throw new GraphQlInputException(__('currentPage value must be greater than 0.'));
         }
         if ($args['pageSize'] < 1) {
             throw new GraphQlInputException(__('pageSize value must be greater than 0.'));
         }
-        if(isset($args['filters']) && (!isset($args['filters']['status']) || !$args['filters']['status'])){
-            $args['filters']['status'] = ['eq' => 1];
+        if(isset($args['filters']) && (!isset($args['filters']['is_public']) || !$args['filters']['is_public'])){
+            $args['filters']['is_public'] = ['eq' => 1];
         }
 
         $store = $context->getExtensionAttributes()->getStore();
