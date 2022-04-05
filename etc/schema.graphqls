@@ -57,7 +57,7 @@ type LofCouponCode {
     discount_amount  : Float  @doc(description: "Query by discount_amount.")
     times_used  : Int  @doc(description: "Query by times_used.")
     created_at  : String  @doc(description: "Query by created_at.")
-    expiration_date  : expiration_date  @doc(description: "Query by created_at.")
+    expiration_date  : String  @doc(description: "Query by created_at.")
     type  : String  @doc(description: "Query by type.")
     coupon_rule : LofCouponRule @doc(description: "Query by Coupon Rule info")
 }

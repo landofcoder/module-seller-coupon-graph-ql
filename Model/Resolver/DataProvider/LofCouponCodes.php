@@ -55,6 +55,15 @@ class LofCouponCodes
      */
     private $getCustomer;
 
+    /**
+     * construct class
+     *
+     * @param CouponManagementInterface $modelRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param ScopeConfigInterface $scopeConfig
+     * @param GetCustomer $getCustomer
+     * @param RuleRepositoryInterface $ruleRepository
+     */
     public function __construct(
         CouponManagementInterface $modelRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
@@ -106,25 +115,29 @@ class LofCouponCodes
 
         switch ($filterType) {
             case "available":
-                $searchResult = $this->modelRepository->getAvailableCoupons($customer->getId(), $searchCriteria );
+                $searchResult = $this->modelRepository
+                                ->getAvailableCoupons($customer->getId(), $searchCriteria );
                 break;
             case "expired":
-                $searchResult = $this->modelRepository->getExpiredCoupons($customer->getId(), $searchCriteria );
+                $searchResult = $this->modelRepository
+                                ->getExpiredCoupons($customer->getId(), $searchCriteria );
                 break;
             case "used":
-                $searchResult = $this->modelRepository->getUsedCoupons($customer->getId(), $searchCriteria );
+                $searchResult = $this->modelRepository
+                                ->getUsedCoupons($customer->getId(), $searchCriteria );
                 break;
             case "all":
             default:
-                $searchResult = $this->modelRepository->getCouponByConditions($customer->getId(), $searchCriteria );
+                $searchResult = $this->modelRepository
+                            ->getCouponByConditions($customer->getId(), $searchCriteria );
                 break;
         }
 
         $totalPages = $args['pageSize'] ? ((int)ceil($searchResult->getTotalCount() / $args['pageSize'])) : 0;
         $resultItems = $searchResult->getItems();
         $items = [];
-        if($resultItems){
-            foreach($resultItems as $_item){
+        if ($resultItems) {
+            foreach ($resultItems as $_item) {
                 $newItem = $_item->__toArray();
                 $newItem["coupon_rule"] = [];
                 if ($_item->getRuleId()) {
@@ -170,13 +183,14 @@ class LofCouponCodes
         $searchCriteria->setCurrentPage( $args['currentPage'] );
         $searchCriteria->setPageSize( $args['pageSize'] );
 
-        $searchResult = $this->modelRepository->getPublicCoupons($args["sellerUrl"], $searchCriteria );
+        $searchResult = $this->modelRepository
+                            ->getPublicCoupons($args["sellerUrl"], $searchCriteria );
 
         $totalPages = $args['pageSize'] ? ((int)ceil($searchResult->getTotalCount() / $args['pageSize'])) : 0;
         $resultItems = $searchResult->getItems();
         $items = [];
-        if($resultItems){
-            foreach($resultItems as $_item){
+        if ($resultItems) {
+            foreach ($resultItems as $_item) {
                 $newItem = $_item->__toArray();
                 $newItem["coupon_rule"] = [];
                 if ($_item->getRuleId()) {
@@ -215,7 +229,7 @@ class LofCouponCodes
         foreach ($filters as $filter => $condition) {
             $conditionType = current(array_keys($condition));
             $tmpminQueryLength = $minQueryLength;
-            if(in_array($filter, $availableMatchFilters)){
+            if (in_array($filter, $availableMatchFilters)) {
                 $tmpminQueryLength = 1;
             }
             if ($conditionType === 'match') {

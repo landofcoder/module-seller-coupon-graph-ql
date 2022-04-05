@@ -1,30 +1,22 @@
-# Magento 2 Split Cart Marketplace Addon
+# Magento 2 Coupon Code Marketplace Addon
 
-    ``landofcoder/module-split-cart-graph-ql``
+    ``landofcoder/module-seller-coupon-graph-ql``
 
 - [Main Functionalities](#markdown-header-main-functionalities)
 - [Installation](#markdown-header-installation)
 
 ## Main Functionalities
-Link: https://landofcoder.com/magento-2-marketplace-split-cart.html
-
-With magento 2 split order marketplace addon, it’s easy for customers to add many products from different sellers into cart when shopping in your marketplace.
-Anytime they go shopping on your marketplace, they can quickly add any desired products into cart and take process to checkout.
-
-- Cart will be divided based on sellers (if buyer add three products from 3 sellers then cart will be split it among 3 cart based on seller )
-- Rest seller product will be removed during checkout from the cart and only single seller’s checkout will be validated
-- Admin can easily manage orders for vendors
-- Customer can choose different payment methods for different vendors
-- Customer can set different shipping address for different vendor's order
-- Admin can enable /disable the Marketplace Split Cart option from the back-end
+- Seller Coupon
+- The module allow Seller create sales rule, generate coupon code for customer via email
+- Customer will purchase seller's products and apply his coupon code to get discount price.
 
 ## Installation
 \* = in production please use the `--keep-generated` option
 
 ### Type 1: Zip file
 
-- Unzip the zip file in `app/code/Lof`
-- Enable the module by running `php bin/magento module:enable Lofmp_SplitCartGraphQl`
+- Unzip the zip file in `app/code/Lofmp`
+- Enable the module by running `php bin/magento module:enable Lofmp_CouponCodeGraphQl`
 - Apply database updates by running `php bin/magento setup:upgrade`\*
 - Flush the cache by running `php bin/magento cache:flush`
 
@@ -35,7 +27,77 @@ Anytime they go shopping on your marketplace, they can quickly add any desired p
     - public repository `packagist.org`
     - public github repository as vcs
 - Add the composer repository to the configuration by running `composer config repositories.repo.magento.com composer https://repo.magento.com/`
-- Install the module composer by running `composer require landofcoder/module-split-cart-graph-ql`
-- enable the module by running `php bin/magento module:enable Lofmp_SplitCartGraphQl`
+- Install the module composer by running `composer require landofcoder/module-seller-coupon-graph-ql`
+- enable the module by running `php bin/magento module:enable Lofmp_CouponCodeGraphQl`
 - apply database updates by running `php bin/magento setup:upgrade`\*
 - Flush the cache by running `php bin/magento cache:flush`
+
+### Queries
+
+1. My Coupon Codes
+
+```
+{
+    myCouponCode (
+        type: "all
+        filters: {}
+        pageSize: 10
+        currentPage: 1
+    ) {
+        total_count
+        items {
+            coupon_id
+            name
+            alias
+            code
+            from_date
+            to_date
+            uses_per_customer
+            discount_amount
+            type
+            times_used
+            created_at
+            expiration_date
+            coupon_rule {
+                rule_id
+                rule_name
+                discount_amount
+            }
+        }
+    }
+}
+```
+
+2. Get seller public coupon codes
+
+```
+{
+    sellerCoupons (
+        sellerUrl: String!
+        filters: {}
+        pageSize: 5
+        currentPage: 1
+    ) {
+        total_count
+        items {
+            coupon_id
+            name
+            alias
+            code
+            from_date
+            to_date
+            uses_per_customer
+            discount_amount
+            type
+            times_used
+            created_at
+            expiration_date
+            coupon_rule {
+                rule_id
+                rule_name
+                discount_amount
+            }
+        }
+    }
+}
+```
