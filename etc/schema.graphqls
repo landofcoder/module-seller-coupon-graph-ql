@@ -1,13 +1,20 @@
 type Query {
-
     myCouponCode (
         type: String @doc(description: "Query by type: all, available, expired, used.")
         filters: CouponCodeFilterInput @doc(description: "Identifies which coupon code filter inputs to search for and return.")
         pageSize: Int = 20 @doc(description: "Specifies the maximum number of results to return at once. This attribute is optional.")
         currentPage: Int = 1 @doc(description: "Specifies which page of results to return. The default value is 1.")
         sort: CouponCodeSortInput @doc(description: "Specifies which attributes to sort on, and whether to return the results in ascending or descending order.")
-    ) : LofCouponCodes @resolver( class: "Lofmp\\CouponCodeGraphQl\\Model\\Resolver\\LofCouponCodes") @doc(description: "Query by Query get Coupon Codes.") @cache( cacheIdentity: "Lofmp\\CouponCodeGraphQl\\Model\\Resolver\\LofCouponCodes\\Identity")
+    ) : LofCouponCodes @resolver( class: "Lofmp\\CouponCodeGraphQl\\Model\\Resolver\\LofCouponCodes") @doc(description: "Query by Query get Coupon Codes.")
 
+    publicCouponCode (
+        type: String @doc(description: "Query by type: all, available, expired, used.")
+        filters: CouponCodeFilterInput @doc(description: "Identifies which coupon code filter inputs to search for and return.")
+        pageSize: Int = 20 @doc(description: "Specifies the maximum number of results to return at once. This attribute is optional.")
+        currentPage: Int = 1 @doc(description: "Specifies which page of results to return. The default value is 1.")
+        sort: CouponCodeSortInput @doc(description: "Specifies which attributes to sort on, and whether to return the results in ascending or descending order.")
+    ) : LofCouponCodes @resolver( class: "Lofmp\\CouponCodeGraphQl\\Model\\Resolver\\PublicCouponCode") @doc(description: "Query by Query get public Coupon Codes.")
+    
     sellerCoupons (
         sellerUrl: String! @doc(description: "Filter for sellerUrl.")
         filters: CouponCodeFilterInput @doc(description: "Identifies which coupon code filter inputs to search for and return.")
@@ -19,6 +26,7 @@ type Query {
 
 input CouponCodeFilterInput  @doc(description: "CouponCodeFilterInput defines the filters to be used in the search. A filter contains at least one attribute, a comparison operator, and the value that is being searched for.")
 {
+    seller_id : FilterEqualTypeInput @doc(description: "Filter Coupon Code seller_id")
     entity_id: FilterEqualTypeInput @deprecated(reason: "Filter Coupon Code entity_id")
     category_id: FilterEqualTypeInput @deprecated(reason: "Filter Coupon Code category_id")
     resource_type: FilterEqualTypeInput @deprecated(reason: "Filter Coupon Code resource_type")
@@ -51,6 +59,7 @@ type LofCouponCode {
     alias  : String  @doc(description: "Query by alias.")
     code  : String  @doc(description: "Query by code.")
     seller_id  : Int  @doc(description: "Query by seller_id.")
+    seller : SellerInfo @doc(description: "Query by seller.")
     from_date  : String  @doc(description: "Query by from_date.")
     to_date  : String  @doc(description: "Query by to_date.")
     uses_per_customer  : String  @doc(description: "Query by uses_per_customer.")
@@ -61,6 +70,7 @@ type LofCouponCode {
     expiration_date  : String  @doc(description: "Query by created_at.")
     type  : String  @doc(description: "Query by type.")
     coupon_rule : LofCouponRule @doc(description: "Query by Coupon Rule info")
+    description  : String  @doc(description: "Query by description.")
 }
 
 type LofCouponRule {
@@ -84,4 +94,12 @@ type SortField {
 type SortFields @doc(description: "SortFields contains a default value for sort fields and all available sort fields.") {
     default: String @doc(description: "Default value of sort fields.")
     options: [SortField] @doc(description: "Available sort fields.")
+}
+
+
+type SellerInfo {
+    seller_id: Int @doc(description: "Seller ID")
+    shop_title: String @doc(description: "Shop Title")
+    thumbnail: String @doc(description: "Thumbnail")
+    url: String @doc(description: "Shop Url")
 }

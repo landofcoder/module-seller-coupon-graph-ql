@@ -27,6 +27,12 @@ use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\ArgumentApp
 class LofCouponCodes
 {
 
+    CONST  AVAILABLE_TYPES = [
+        "all",
+        "available",
+        "expired",
+        "used"
+    ];
     /**
      * @var string
      */
@@ -94,14 +100,8 @@ class LofCouponCodes
         if ($args['pageSize'] < 1) {
             throw new GraphQlInputException(__('pageSize value must be greater than 0.'));
         }
-        $availableTypes = [
-            "all",
-            "available",
-            "expired",
-            "used"
-        ];
         $filterType = isset($args['type']) ? trim($args["type"]) : "all";
-        if (!in_array($filterType, $availableTypes)) {
+        if (!in_array($filterType, self::AVAILABLE_TYPES)) {
             $filterType = "all";
         }
         $store = $context->getExtensionAttributes()->getStore();
@@ -135,10 +135,10 @@ class LofCouponCodes
         $items = [];
         if ($resultItems) {
             foreach ($resultItems as $_item) {
-                $newItem = $_item->getData();
+                $newItem = $_item;
                 $newItem["coupon_rule"] = [];
-                if ($_item->getRuleId()) {
-                    $ruleItem = $this->ruleRepository->getById($_item->getRuleId() );
+                if ($_item['rule_id']) {
+                    $ruleItem = $this->ruleRepository->getById($_item['rule_id']);
                     $newItem["coupon_rule"] = $ruleItem->__toArray();
                 }
                 $items[] = $newItem;
@@ -154,6 +154,58 @@ class LofCouponCodes
             ]
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublicCouponCodes($args, $context)
+    {
+        if ($args['currentPage'] < 1) {
+            throw new GraphQlInputException(__('currentPage value must be greater than 0.'));
+        }
+        if ($args['pageSize'] < 1) {
+            throw new GraphQlInputException(__('pageSize value must be greater than 0.'));
+        }
+
+        $store = $context->getExtensionAttributes()->getStore();
+        $args[Filter::ARGUMENT_NAME] = $this->formatMatchFilters($args['filters'], $store);
+        $searchCriteria = $this->searchCriteriaBuilder->build( 'lofCouponCodes', $args );
+        $searchCriteria->setCurrentPage( $args['currentPage'] );
+        $searchCriteria->setPageSize( $args['pageSize'] );
+
+        $filterType = isset($args['type']) ? trim($args["type"]) : "all";
+        if (!in_array($filterType, self::AVAILABLE_TYPES)) {
+            $filterType = "all";
+        }
+
+        $searchResult = $this->modelRepository->getAllPublicCoupons($filterType, $searchCriteria);
+        
+        $totalPages = $args['pageSize'] ? ((int)ceil($searchResult->getTotalCount() / $args['pageSize'])) : 0;
+        $resultItems = $searchResult->getItems();
+        $items = [];
+
+        if ($resultItems) {
+            foreach ($resultItems as $_item) {
+                $newItem = $_item;
+                $newItem["coupon_rule"] = [];
+                if ($_item['rule_id']) {
+                    $ruleItem = $this->ruleRepository->getById($_item['rule_id']);
+                    $newItem["coupon_rule"] = $ruleItem->__toArray();
+                }
+                $items[] = $newItem;
+            }
+        }
+        return [
+            'total_count' => $searchResult->getTotalCount(),
+            'items'       => $items,
+            'page_info' => [
+                'page_size' => $args['pageSize'],
+                'current_page' => $args['currentPage'],
+                'total_pages' => $totalPages
+            ]
+        ];
+    }
+
 
     /**
      * @inheritdoc
@@ -184,10 +236,10 @@ class LofCouponCodes
         $items = [];
         if ($resultItems) {
             foreach ($resultItems as $_item) {
-                $newItem = $_item->getData();
+                $newItem = $_item;
                 $newItem["coupon_rule"] = [];
-                if ($_item->getRuleId()) {
-                    $ruleItem = $this->ruleRepository->getById($_item->getRuleId() );
+                if ($_item['rule_id']) {
+                    $ruleItem = $this->ruleRepository->getById($_item['rule_id']);
                     $newItem["coupon_rule"] = $ruleItem->__toArray();
                 }
                 $items[] = $newItem;
