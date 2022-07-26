@@ -4,6 +4,7 @@
         <arguments>
             <argument name="attributesInstances" xsi:type="array">
                 <item name="lofCouponCodes" xsi:type="object">\Lofmp\CouponCodeGraphQl\Model\Resolver\FilterArgumentCouponCodes</item>
+                <item name="lofPublicCouponCodes" xsi:type="object">\Lofmp\CouponCodeGraphQl\Model\Resolver\FilterArgumentCouponCodes</item>
             </argument>
         </arguments>
     </type>
