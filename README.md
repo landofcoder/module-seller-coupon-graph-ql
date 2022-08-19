@@ -63,6 +63,13 @@
                 rule_name
                 discount_amount
             }
+            seller_id
+            seller {
+                seller_id
+                shop_title
+                thumbnail
+                url
+            }
         }
     }
 }
@@ -96,6 +103,54 @@
                 rule_id
                 rule_name
                 discount_amount
+            }
+            seller_id
+            seller {
+                seller_id
+                shop_title
+                thumbnail
+                url
+            }
+        }
+    }
+}
+```
+
+3. Get public coupon codes
+
+```
+{
+    publicCouponCode (
+        type: String
+        filters: {}
+        pageSize: 5
+        currentPage: 1
+    ) {
+        total_count
+        items {
+            coupon_id
+            name
+            alias
+            code
+            from_date
+            to_date
+            uses_per_customer
+            discount_amount
+            type
+            times_used
+            created_at
+            expiration_date
+            coupon_rule {
+                rule_id
+                rule_name
+                discount_amount
+            }
+            seller_id
+            seller {
+                seller_id
+                shop_title
+                thumbnail
+                url
             }
         }
     }
